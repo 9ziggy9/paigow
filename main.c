@@ -23,36 +23,40 @@ typedef struct { Hand hands[8]; } Deck;
 
 Deck generate_ordered_deck(void) {
   return (Deck) {
-    .hands = {0x00FF, 0xEEDD, 0xCCBB, 0xAA99, 0x8877, 0x6655, 0x4433, 0x2211}
+    .hands = {0xFFEE, 0xDDCC, 0xBBAA, 0x9988, 0x7766, 0x5544, 0x3322, 0x1100}
   };
 }
 
-void print_deck_levels(const Deck *d) {
-  for (size_t hand = 0; hand < 8; hand++) {
-    printf("Hand at %zu: 0x%04x\n", hand, d->hands[hand]);
-    for (size_t sh = 0; sh < 2; sh++) {
-      printf("\tSubhand at %zu: ", hand);
-      printf("0x%02x \n", (d->hands[hand] >> (sh * 8) & 0xFF));
-      printf("\t\tTiles: ");
-      for (size_t tl = 0; tl < 2; tl++)
-        printf("%x ", ((d->hands[hand] >> (sh * 8) & 0xFF) >> (tl * 4)) & 0xF);
-      printf("\n");
+#define GET_HAND_NUMBER(N) (N / 4)
+#define SHIFT_TO_NTH_TILE(N) ((3 - (N % 4)) * 4)
+
+void print_deck(const Deck *d) {
+  for (size_t hand_idx = 0; hand_idx < 8; hand_idx++) {
+    for (size_t nth_tile = 0; nth_tile < 4; nth_tile++) {
+      printf("%x ", (d->hands[hand_idx] >> SHIFT_TO_NTH_TILE(nth_tile)) & 0xF);
     }
+    if (hand_idx % 2) printf("\n");
   }
 }
 
 Tile copy_nth_tile(const Deck *d, size_t n) {
-  assert(n >= 0 && n < 32);
-  size_t hand_idx = n / 4;
-  size_t tile_pos = n % 4;
-  return (Tile) (d->hands[hand_idx] >> (12 - tile_pos * 4)) & 0xF;
+  assert(n < 32);
+  return (Tile) (d->hands[GET_HAND_NUMBER(n)] >> SHIFT_TO_NTH_TILE(n)) & 0xF;
+}
+
+Deck paste_tile_at(const Deck *d, size_t n, Tile tl) {
+  assert(n < 32);
+  Deck new_deck = *d;
+  uint16_t shift = SHIFT_TO_NTH_TILE(n);
+  new_deck.hands[GET_HAND_NUMBER(n)] &= (Hand) ~(0xF << shift);
+  new_deck.hands[GET_HAND_NUMBER(n)] |= (Hand) ((uint16_t) tl << shift);
+  return new_deck;
 }
 
 int main(void) {
-  const Deck ordered = generate_ordered_deck();
-  for (size_t n = 0; n < 32; n++) {
-    const Tile copied_tile = copy_nth_tile(&ordered, n);
-    printf("Tile is: %x\n", copied_tile);
-  }
+  const Deck ordered_deck = generate_ordered_deck();
+  Tile tl_teen = copy_nth_tile(&ordered_deck, 0);
+  const Deck new_deck = paste_tile_at(&ordered_deck, 31, tl_teen);
+  print_deck(&new_deck);
   return 0;
 }
