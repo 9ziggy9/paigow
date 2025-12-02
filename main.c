@@ -41,8 +41,18 @@ void print_deck_levels(const Deck *d) {
   }
 }
 
+Tile copy_nth_tile(const Deck *d, size_t n) {
+  assert(n >= 0 && n < 32);
+  size_t hand_idx = n / 4;
+  size_t tile_pos = n % 4;
+  return (Tile) (d->hands[hand_idx] >> (12 - tile_pos * 4)) & 0xF;
+}
+
 int main(void) {
   const Deck ordered = generate_ordered_deck();
-  print_deck_levels(&ordered);
+  for (size_t n = 0; n < 32; n++) {
+    const Tile copied_tile = copy_nth_tile(&ordered, n);
+    printf("Tile is: %x\n", copied_tile);
+  }
   return 0;
 }
