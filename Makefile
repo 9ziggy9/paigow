@@ -1,12 +1,13 @@
 EXE=./main
 SRC=main.c
+CC=gcc
 CFLAGS=-Wall -pedantic -Wconversion -Werror
 
 run: main
 	$(EXE)
 
 main:
-	cc ./main.c $(CFLAGS) -o $(EXE)
+	$(CC) ./main.c $(CFLAGS) -o $(EXE)
 
 .PHONY: clean
 clean:

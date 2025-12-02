@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -20,12 +21,28 @@ typedef uint16_t Hand;
 // A complete deck is 8 16 bit hands.
 typedef struct { Hand hands[8]; } Deck;
 
-int main(void) {
-  Subhand shand1 = MAKE_SUBHAND(TL_GEEJUN, TL_CHOPNG);
-  Subhand shand2 = MAKE_SUBHAND(TL_TEEN, TL_DAY);
-  printf("Subhands are: 0x%02x 0x%02x\n", shand1, shand2);
+Deck generate_ordered_deck(void) {
+  return (Deck) {
+    .hands = {0x00FF, 0xEEDD, 0xCCBB, 0xAA99, 0x8877, 0x6655, 0x4433, 0x2211}
+  };
+}
 
-  Hand hand = MAKE_HAND(shand1, shand2);
-  printf("Hand is: 0x%04x\n", hand);
+void print_deck_levels(const Deck *d) {
+  for (size_t hand = 0; hand < 8; hand++) {
+    printf("Hand at %zu: 0x%04x\n", hand, d->hands[hand]);
+    for (size_t sh = 0; sh < 2; sh++) {
+      printf("\tSubhand at %zu: ", hand);
+      printf("0x%02x \n", (d->hands[hand] >> (sh * 8) & 0xFF));
+      printf("\t\tTiles: ");
+      for (size_t tl = 0; tl < 2; tl++)
+        printf("%x ", ((d->hands[hand] >> (sh * 8) & 0xFF) >> (tl * 4)) & 0xF);
+      printf("\n");
+    }
+  }
+}
+
+int main(void) {
+  const Deck ordered = generate_ordered_deck();
+  print_deck_levels(&ordered);
   return 0;
 }
