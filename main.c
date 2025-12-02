@@ -1,6 +1,10 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <time.h>
+#include <stdlib.h>
+
+#define NUM_TILES 32
 
 // Simple single nybble encoding from 0x0 to 0xF.
 // Note order is taken for single tile rankings for comparison.
@@ -35,17 +39,17 @@ void print_deck(const Deck *d) {
     for (size_t nth_tile = 0; nth_tile < 4; nth_tile++) {
       printf("%x ", (d->hands[hand_idx] >> SHIFT_TO_NTH_TILE(nth_tile)) & 0xF);
     }
-    if (hand_idx % 2) printf("\n");
+    if (hand_idx % 2 || hand_idx == 7) printf("\n");
   }
 }
 
 Tile copy_nth_tile(const Deck *d, size_t n) {
-  assert(n < 32);
+  assert(n < NUM_TILES);
   return (Tile) (d->hands[GET_HAND_NUMBER(n)] >> SHIFT_TO_NTH_TILE(n)) & 0xF;
 }
 
 Deck paste_tile_at(const Deck *d, size_t n, Tile tl) {
-  assert(n < 32);
+  assert(n < NUM_TILES);
   Deck new_deck = *d;
   uint16_t shift = SHIFT_TO_NTH_TILE(n);
   new_deck.hands[GET_HAND_NUMBER(n)] &= (Hand) ~(0xF << shift);
@@ -53,10 +57,16 @@ Deck paste_tile_at(const Deck *d, size_t n, Tile tl) {
   return new_deck;
 }
 
+#define RANDOM_TILE_BELOW(MAX) ((size_t) rand() % (MAX+1))
+
 int main(void) {
+  srand((unsigned int)time(NULL));
   const Deck ordered_deck = generate_ordered_deck();
   Tile tl_teen = copy_nth_tile(&ordered_deck, 0);
   const Deck new_deck = paste_tile_at(&ordered_deck, 31, tl_teen);
   print_deck(&new_deck);
+  while (1) {
+    printf("%zu\n", RANDOM_TILE_BELOW(NUM_TILES));
+  }
   return 0;
 }
