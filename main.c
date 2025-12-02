@@ -57,16 +57,30 @@ Deck paste_tile_at(const Deck *d, size_t n, Tile tl) {
   return new_deck;
 }
 
-#define RANDOM_TILE_BELOW(MAX) ((size_t) rand() % (MAX+1))
+#define RANDOM_TILE_POS_BELOW(MAX) ((size_t) rand() % (MAX+1))
+
+Deck shuffle_fisher_yates(const Deck *d) {
+  Deck tmp_deck = *d;
+  for (size_t n = NUM_TILES - 1; n > 0; n--) {
+    size_t rand_pos = RANDOM_TILE_POS_BELOW(n);
+    Tile curr_tl = copy_nth_tile(&tmp_deck, n);
+    Tile rand_tl = copy_nth_tile(&tmp_deck, rand_pos);
+    tmp_deck = paste_tile_at(&tmp_deck, n, rand_tl);
+    tmp_deck = paste_tile_at(&tmp_deck, rand_pos, curr_tl);
+  }
+  return tmp_deck;
+}
 
 int main(void) {
   srand((unsigned int)time(NULL));
+
+  printf("\nPreshuffle:\n");
   const Deck ordered_deck = generate_ordered_deck();
-  Tile tl_teen = copy_nth_tile(&ordered_deck, 0);
-  const Deck new_deck = paste_tile_at(&ordered_deck, 31, tl_teen);
-  print_deck(&new_deck);
-  while (1) {
-    printf("%zu\n", RANDOM_TILE_BELOW(NUM_TILES));
-  }
+  print_deck(&ordered_deck);
+
+  printf("\nPostshuffle:\n");
+  const Deck shuffled_deck = shuffle_fisher_yates(&ordered_deck);
+  print_deck(&shuffled_deck);
+
   return 0;
 }
