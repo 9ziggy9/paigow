@@ -1,15 +1,14 @@
 #include "tiles.h"
+#include "analysis.h"
 
 int main(void) {
   srand((unsigned int)time(NULL));
 
-  printf("\nPreshuffle:\n");
-  const Deck ordered_deck = TILES_generate_ordered_deck();
-  TILES_print_deck(&ordered_deck);
+  Hand h = 0xAF21;
 
-  printf("\nPostshuffle:\n");
-  const Deck shuffled_deck = TILES_shuffle(&ordered_deck);
-  TILES_print_deck(&shuffled_deck);
+  PairInfo pinfo = ANALYSIS_pairs(&h);
+
+  ANALYSIS_print_pair_info(&pinfo);
 
   return 0;
 }

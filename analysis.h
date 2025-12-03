@@ -9,6 +9,7 @@ typedef struct {
   Tile paired_tiles[2];
 } PairInfo;
 
-PairInfo analyze_pairs(const Hand *);
+void ANALYSIS_print_pair_info(const PairInfo *);
+PairInfo ANALYSIS_pairs(const Hand *);
 
 #endif // ANALYSIS_H

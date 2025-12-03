@@ -1,11 +1,5 @@
 #include "tiles.h"
 
-Deck TILES_generate_ordered_deck(void) {
-  return (Deck) {
-    .hands = {0xFFEE, 0xDDCC, 0xBBAA, 0x9988, 0x7766, 0x5544, 0x3322, 0x1100}
-  };
-}
-
 void TILES_print_deck(const Deck *d) {
   for (size_t hand_idx = 0; hand_idx < 8; hand_idx++) {
     for (size_t nth_tile = 0; nth_tile < 4; nth_tile++) {
@@ -13,6 +7,29 @@ void TILES_print_deck(const Deck *d) {
     }
     if (hand_idx % 2 || hand_idx == 7) printf("\n");
   }
+}
+
+Hand TILES_presort_hand(const Hand *h) {
+  Tile tiles[4] = {
+    (*h >> 12) & 0xF,
+    (*h >> 8)  & 0xF,
+    (*h >> 4)  & 0xF,
+    (*h >> 0)  & 0xF
+  };
+  
+  // bubble sort (only 4 elements, very fast)
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3 - i; j++) {
+      if (tiles[j] < tiles[j + 1]) {
+        Tile temp = tiles[j];
+        tiles[j] = tiles[j + 1];
+        tiles[j + 1] = temp;
+      }
+    }
+  }
+
+  return (Hand)((tiles[0] << 12) | (tiles[1] << 8) |
+                (tiles[2] << 4)  | tiles[3]);
 }
 
 Tile TILES_copy_nth(const Deck *d, size_t n) {
@@ -39,4 +56,10 @@ Deck TILES_shuffle(const Deck *d) {
     tmp_deck = TILES_paste_at(&tmp_deck, rand_pos, curr_tl);
   }
   return tmp_deck;
+}
+
+Deck TILES_generate_ordered_deck(void) {
+  return (Deck) {
+    .hands = {0xFFEE, 0xDDCC, 0xBBAA, 0x9988, 0x7766, 0x5544, 0x3322, 0x1100}
+  };
 }
