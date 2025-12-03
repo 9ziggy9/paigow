@@ -1,17 +1,17 @@
 EXE=./main
-SRC=main.c
+DEPS=tiles.c analysis.c
+OBJS=$(DEPS:.c=.o)
 CC=gcc
 CFLAGS=-Wall -pedantic -Wconversion -Werror
-OBJS=tiles.o
 
 run: main
 	$(EXE)
 
-main: tiles.o main.c
+main: $(OBJS) main.c
 	$(CC) ./main.c $(CFLAGS) -o $(EXE) $(OBJS)
 
-tiles.o: tiles.c
-	$(CC) $(CFLAGS) -c tiles.c
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
 
 .PHONY: clean
 clean:

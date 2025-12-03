@@ -30,10 +30,12 @@ typedef uint16_t Hand;
 // A complete deck is 8 16 bit hands.
 typedef struct { Hand hands[8]; } Deck;
 
-Deck generate_ordered_deck(void);
-void print_deck(const Deck *);
-Tile copy_nth_tile(const Deck *, size_t);
-Deck paste_tile_at(const Deck *, size_t, Tile);
-Deck shuffle_fisher_yates(const Deck *);
+void TILES_print_deck(const Deck *);
+
+Deck TILES_generate_ordered_deck(void);
+Deck TILES_paste_at(const Deck *, size_t, Tile);
+Deck TILES_shuffle(const Deck *);
+
+Tile TILES_copy_nth(const Deck *, size_t);
 
 #endif // TILES_H_
