@@ -4,11 +4,11 @@
 int main(void) {
   srand((unsigned int)time(NULL));
 
-  Hand h = 0xAF21;
+  Hand h = 0xAF2F;
 
-  PairInfo pinfo = ANALYSIS_pairs(&h);
-
-  ANALYSIS_print_pair_info(&pinfo);
+  HandInfo info = ANALYSIS_init(h);
+  info = ANALYSIS_hand(&info);
+  ANALYSIS_print_info(&info);
 
   return 0;
 }

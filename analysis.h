@@ -5,11 +5,16 @@
 #include <stdint.h>
 
 typedef struct {
+  Hand raw;
   uint8_t num_pairs;
+  bool has_teen;
+  bool has_day;
   Tile paired_tiles[2];
-} PairInfo;
+  Tile tiles[4];
+} HandInfo;
 
-void ANALYSIS_print_pair_info(const PairInfo *);
-PairInfo ANALYSIS_pairs(const Hand *);
+HandInfo ANALYSIS_init(Hand);
+HandInfo ANALYSIS_hand(const HandInfo *);
+void ANALYSIS_print_info(const HandInfo *);
 
 #endif // ANALYSIS_H
