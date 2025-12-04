@@ -2,12 +2,11 @@
 #define GAME_H_
 
 #include "tiles.h"
+#include "analysis.h"
 #include <stdbool.h>
 
-typedef enum {
-  CLASS_GENERIC, CLASS_GONG, CLASS_WONG, CLASS_PAIR
-} HandClassification;
+typedef enum { LOW_HAND, HIGH_HAND } SubhandVariant;
 
-HandClassification GAME_classify_subhand(Subhand *);
+uint8_t GAME_score_subhand(const Hand *, SubhandVariant);
 
 #endif // GAME_H_

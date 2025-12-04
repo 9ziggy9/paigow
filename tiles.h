@@ -37,6 +37,7 @@ Deck TILES_paste_at(const Deck *, size_t, Tile);
 Deck TILES_shuffle(const Deck *);
 
 Hand TILES_presort_hand(const Hand *);
+Hand TILES_hand_from_tiles(Tile, Tile, Tile, Tile);
 
 Tile TILES_copy_nth(const Deck *, size_t);
 

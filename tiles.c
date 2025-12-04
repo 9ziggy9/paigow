@@ -32,6 +32,13 @@ Hand TILES_presort_hand(const Hand *h) {
                 (tiles[2] << 4)  | tiles[3]);
 }
 
+Hand TILES_hand_from_tiles(Tile t1, Tile t2, Tile t3, Tile t4) {
+  return ((t1 << 12) & 0xF000)
+    | ((t2 << 8) & 0x0F00)
+    | ((t3 << 4) & 0x00F0)
+    | ((t4 << 0) & 0x000F);
+}
+
 Tile TILES_copy_nth(const Deck *d, size_t n) {
   assert(n < NUM_TILES);
   return (Tile) (d->hands[GET_HAND_NUMBER(n)] >> SHIFT_TO_NTH_TILE(n)) & 0xF;

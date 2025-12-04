@@ -1,5 +1,5 @@
 EXE=./main
-DEPS=tiles.c analysis.c
+DEPS=tiles.c analysis.c game.c
 OBJS=$(DEPS:.c=.o)
 CC=gcc
 CFLAGS=-Wall -pedantic -Wconversion -Werror
